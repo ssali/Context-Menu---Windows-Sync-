@@ -994,7 +994,7 @@ namespace Mezeo
         {
             // Replace/update the key when a container has been moved or renamed.
             // update table_name set key = replace(key, '<old_val>', '<new_val>') where key like <old_val>/%'; 
-            string query = "update " + TABLE_NAME + " set " + KEY + " = replace(" + KEY + ", '" + oldValue + "', '" + newValues + "') where " + KEY + " like '" + oldValue + "%';";
+            string query = "update " + TABLE_NAME + " set " + KEY + " = replace(" + KEY + ", '" + EscapeString(oldValue) + "', '" + EscapeString(newValues) + "') where " + KEY + " like '" + EscapeString(oldValue) + "%';";
             int result = -1;
 
             SQLiteConnection sqlConnection = OpenConnection();
@@ -1009,7 +1009,7 @@ namespace Mezeo
         {
             // Replace/update the parent_dir when a container has been moved or renamed.
             // update table_name set parent_dir = strParentName where key = key; 
-            string query = "update " + TABLE_NAME + " set " + PARENT_DIR + " = '" + strParentName + "' where " + KEY + " = '" + key + "';";
+            string query = "update " + TABLE_NAME + " set " + PARENT_DIR + " = '" + EscapeString(strParentName) + "' where " + KEY + " = '" + EscapeString(key) + "';";
             int result = -1;
 
             SQLiteConnection sqlConnection = OpenConnection();
