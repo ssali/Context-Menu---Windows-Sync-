@@ -1935,7 +1935,7 @@ namespace Mezeo
                     FileInfo fileInfo = new FileInfo(strPath);
                     if ((fileInfo != null) && (0 == (fileInfo.Attributes & FileAttributes.Directory)) && fileInfo.Exists && (fileInfo.Length != nqDetail.lSize))
                         bLocalFileDiffers = true;
-                    if (!System.IO.File.Exists(strPath))
+                    if ((0 == (fileInfo.Attributes & FileAttributes.Directory)) && (!System.IO.File.Exists(strPath)))
                         bLocalFileDiffers = true;
                 }
 
