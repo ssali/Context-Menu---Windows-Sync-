@@ -274,7 +274,8 @@ namespace Mezeo
         public static void Add(LocalEvents newEvent)
         {
             // Ignore events for anything that has .partial.m_strMacAdd or .original.m_strMacAdd in the name.
-            if (newEvent.FileName.Contains(m_strOriginal) || newEvent.FileName.Contains(m_strPartial))
+            if (newEvent.FileName.Contains(m_strOriginal) || newEvent.FileName.Contains(m_strPartial) ||
+                newEvent.OldFileName.Contains(m_strOriginal) || newEvent.OldFileName.Contains(m_strPartial))
             {
                 LogWrapper.LogMessage("EventQueue - Add", "Ignoring event: (" + newEvent.EventType + ") " + newEvent.FullPath);
                 return;
