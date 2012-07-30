@@ -12,6 +12,14 @@ rd /s /q "%rootPath%\Mezeo File API Wrapper For C#.Net\MezeoFileSupport\bin\Rele
 )
 
 @echo.
+@echo *** %buildMode% MezeoPostInstallLauncher
+msbuild "%rootPath%\MezeoPostInstallLauncher\MezeoPostInstallLauncher.sln" /t:%buildMode% "/p:Configuration=Release;Platform=Any CPU" /v:m /nologo
+if errorlevel 1 goto :eof
+if /i "%buildmode%"=="clean" (
+rd /s /q "%rootPath%\MezeoPostInstallLauncher\MezeoPostInstallLauncher\bin\Release"
+)
+
+@echo.
 @echo *** %buildMode% 32-bit MezeoFileRmml
 @echo Convert "%rootPath%\Mezeo File API Wrapper For C#.Net\MezeoFileRmvFile\MezeoFileRmml.sln" from VS2008 to VS2010
 msbuild "%rootPath%\Mezeo File API Wrapper For C#.Net\MezeoFileRmvFile\MezeoFileRmml.sln" /t:%buildMode% /p:Configuration=Release;Platform=Win32 /v:m /nologo
@@ -46,6 +54,8 @@ if errorlevel 1 goto :eof
 xcopy "%rootPath%\Mezeo File API Wrapper For C#.Net\MezeoFileRmvFile\Release\MezeoFileRmml.exe" "%rootPath%\Mezeo File API Wrapper For C#.Net\Mezeo File Installer\*.*" /cry
 if errorlevel 1 goto :eof
 xcopy "%rootPath%\Mezeo\Mezeo\bin\Release\MezeoFile.exe" "%rootPath%\Mezeo File API Wrapper For C#.Net\Mezeo File Installer\*.*" /cry
+if errorlevel 1 goto :eof
+xcopy "%rootPath%\MezeoPostInstallLauncher\MezeoPostInstallLauncher\bin\Release\MezeoPostInstallLauncher.exe" "%rootPath%\Mezeo File API Wrapper For C#.Net\Mezeo File Installer\*.*" /cry
 if errorlevel 1 goto :eof
 )
 @echo Manually change the ProductVersion and ProductCode values in the project. TODO: find a way to automatically set this.
@@ -89,6 +99,8 @@ if errorlevel 1 goto :eof
 xcopy "%rootPath%\Mezeo File API Wrapper For C#.Net\MezeoFileRmvFile\Release\MezeoFileRmml.exe" "%rootPath%\Mezeo File API Wrapper For x64\Mezeo File Sync _ 64\*.*" /cry
 if errorlevel 1 goto :eof
 xcopy "%rootPath%\Mezeo\Mezeo\bin\x64\Release\MezeoFile.exe" "%rootPath%\Mezeo File API Wrapper For x64\Mezeo File Sync _ 64\*.*" /cry
+if errorlevel 1 goto :eof
+xcopy "%rootPath%\MezeoPostInstallLauncher\MezeoPostInstallLauncher\bin\Release\MezeoPostInstallLauncher.exe" "%rootPath%\Mezeo File API Wrapper For x64\Mezeo File Sync _ 64\*.*" /cry
 if errorlevel 1 goto :eof
 )
 @echo Manually change the ProductVersion and ProductCode values in the project. TODO: find a way to automatically set this.
