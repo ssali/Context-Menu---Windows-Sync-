@@ -2049,9 +2049,15 @@ namespace Mezeo
                     }
                     else
                     {
+                        // Let's update the name as well.
+                        string fileName = strPath.Substring(strPath.LastIndexOf("\\") + 1);
+                        dbHandler.Update(DbHandler.TABLE_NAME, DbHandler.FILE_NAME, fileName, DbHandler.KEY, strDBKey);
+
+                        // Update the key for the entry.
                         Directory.Move(BasicInfo.SyncDirPath + "\\" + strDBKey, strPath);
                         dbHandler.Update(DbHandler.TABLE_NAME, DbHandler.KEY , strKey , DbHandler.KEY , strDBKey );
 
+                        // Update the key for the children.
                         DirectoryInfo rootDir = new DirectoryInfo(strPath);
                         WalkDirectoryTree(rootDir, BasicInfo.SyncDirPath + "\\" + strDBKey);
                     }
