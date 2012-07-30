@@ -21,18 +21,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_13418A33E32975714F7C0FCF2A73FA95"
-        "OwnerKey" = "8:_93633F3672AF5F79E3258A4FBC92AFC1"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2423443EB50458BD06AECF197697DDE3"
-        "OwnerKey" = "8:_DFF7F401643C436EB485570961CD88CC"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_3AEDD2ECD67F4B769BA42FC5F2A56D2A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -75,24 +63,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_93633F3672AF5F79E3258A4FBC92AFC1"
-        "OwnerKey" = "8:_DFF7F401643C436EB485570961CD88CC"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_D336FDEA74D4A0335A5FEF452C58E21F"
-        "OwnerKey" = "8:_DFF7F401643C436EB485570961CD88CC"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DA5D974368B74F1D1E8EC96563FD6F37"
-        "OwnerKey" = "8:_DFF7F401643C436EB485570961CD88CC"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_DDB9E06437EB4B6A9CAE054EB0168BC7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -111,12 +81,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_E66B53928F3AEA50BBBDD301CEA24A14"
-        "OwnerKey" = "8:_DFF7F401643C436EB485570961CD88CC"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_7DB3EA15B50B4706BA49777840D2CEE3"
         "MsmSig" = "8:_UNDEFINED"
@@ -124,49 +88,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_E66B53928F3AEA50BBBDD301CEA24A14"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_DFF7F401643C436EB485570961CD88CC"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_DA5D974368B74F1D1E8EC96563FD6F37"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_D336FDEA74D4A0335A5FEF452C58E21F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_93633F3672AF5F79E3258A4FBC92AFC1"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_75205BA09AD1466DB1FFC967318AFAFB"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_3AEDD2ECD67F4B769BA42FC5F2A56D2A"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_2423443EB50458BD06AECF197697DDE3"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -378,37 +300,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_2423443EB50458BD06AECF197697DDE3"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:AppLimit.NetSparkle.Net40, Version=1.0.83.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_2423443EB50458BD06AECF197697DDE3"
-                    {
-                    "Name" = "8:AppLimit.NetSparkle.Net40.DLL"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:AppLimit.NetSparkle.Net40.DLL"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_E2CA41781701484DA8E973D55A111194"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3AEDD2ECD67F4B769BA42FC5F2A56D2A"
             {
             "AssemblyRegister" = "3:1"
@@ -527,11 +418,6 @@
             "AssemblyAsmDisplayName" = "8:SupportFile, Version=2.0.66.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_75205BA09AD1466DB1FFC967318AFAFB"
-                    {
-                    "Name" = "8:SupportFile.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:SupportFile.dll"
             "TargetName" = "8:"
@@ -582,99 +468,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_93633F3672AF5F79E3258A4FBC92AFC1"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Interop.IWshRuntimeLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86"
-                "ScatterAssemblies"
-                {
-                    "_93633F3672AF5F79E3258A4FBC92AFC1"
-                    {
-                    "Name" = "8:Interop.IWshRuntimeLibrary.DLL"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Interop.IWshRuntimeLibrary.DLL"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_E2CA41781701484DA8E973D55A111194"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D336FDEA74D4A0335A5FEF452C58E21F"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:System.Data.SQLite, Version=1.0.81.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86"
-                "ScatterAssemblies"
-                {
-                    "_D336FDEA74D4A0335A5FEF452C58E21F"
-                    {
-                    "Name" = "8:System.Data.SQLite.DLL"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:System.Data.SQLite.DLL"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_E2CA41781701484DA8E973D55A111194"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DA5D974368B74F1D1E8EC96563FD6F37"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:SupportFile, Version=2.0.66.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_DA5D974368B74F1D1E8EC96563FD6F37"
-                    {
-                    "Name" = "8:SupportFile.DLL"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:SupportFile.DLL"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_E2CA41781701484DA8E973D55A111194"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DDB9E06437EB4B6A9CAE054EB0168BC7"
             {
             "SourcePath" = "8:rbmez.bat"
@@ -702,11 +495,6 @@
             "AssemblyAsmDisplayName" = "8:MezeoFile, Version=2.0.66.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
-                    "_DFF7F401643C436EB485570961CD88CC"
-                    {
-                    "Name" = "8:MezeoFile.exe"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:MezeoFile.exe"
             "TargetName" = "8:"
@@ -744,37 +532,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E66B53928F3AEA50BBBDD301CEA24A14"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:TRUE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.VisualBasic.PowerPacks.Vs, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_E66B53928F3AEA50BBBDD301CEA24A14"
-                    {
-                    "Name" = "8:Microsoft.VisualBasic.PowerPacks.Vs.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Microsoft.VisualBasic.PowerPacks.Vs.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_E2CA41781701484DA8E973D55A111194"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
         }
@@ -902,7 +659,7 @@
             {
             "Name" = "8:osVersionCheck"
             "Condition" = "8:Not VersionNT64"
-            "Message" = "8:This installation package is not supported by this processor type.  Contact your product vendor."
+            "Message" = "8:The version of this file is not compatible with the version of Windows you're running.  Check your computer's system information to see whether you need an x86 (32-bit) or x64 (64-bit) version of the program, and then contact the software publisher."
             "InstallUrl" = "8:"
             }
         }
