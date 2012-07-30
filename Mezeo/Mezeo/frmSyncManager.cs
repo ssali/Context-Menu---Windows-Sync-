@@ -495,6 +495,8 @@ namespace Mezeo
              
                         UpdateUsageLabel();
                      }
+                     else if (IsSyncPaused())
+                         ChangeUIOnPause();
                      else if (CanNotTalkToServer())
                          ShowSyncManagerOffline();
                      else if(!IsInIdleState())
@@ -550,6 +552,8 @@ namespace Mezeo
                   
                     UpdateUsageLabel();
                 }
+                else if (IsSyncPaused())
+                    ChangeUIOnPause();
                 else if (CanNotTalkToServer())
                     ShowSyncManagerOffline();
                 else if (!IsInIdleState())
@@ -1341,11 +1345,13 @@ namespace Mezeo
             if (!IsSyncPaused())
             {
                 frmParent.syncPausedOperation();
+                resetAllControls();
                 return;
             }
             if (IsSyncPaused())
             {
                 frmParent.syncResumeOperation();
+                resetAllControls();
                 return;
             }
         }
@@ -4382,7 +4388,8 @@ namespace Mezeo
 
         public void SyncPauseBalloonMessage()
         {
-            cnotificationManager.NotificationHandler.Icon = Properties.Resources.app_icon_disabled;
+            // Commenting icon to maintain state of the application 
+            //cnotificationManager.NotificationHandler.Icon = Properties.Resources.app_icon_disabled;
             cnotificationManager.NotificationHandler.ShowBalloonTip(1, LanguageTranslator.GetValue("TrayBalloonSyncStatusText"),
                                                                            LanguageTranslator.GetValue("TrayBalloonSyncPauseText"),
                                                                           ToolTipIcon.None);
@@ -4392,10 +4399,11 @@ namespace Mezeo
 
         public void SyncResumeBalloonMessage()
         {
-            if (IsInIdleState())
-                cnotificationManager.NotificationHandler.Icon = Properties.Resources.MezeoVault;
-            else
-                cnotificationManager.NotificationHandler.Icon = Properties.Resources.mezeosyncstatus_syncing;
+            // Commenting icon to maintain state of the application 
+            //if (IsInIdleState())
+            //    cnotificationManager.NotificationHandler.Icon = Properties.Resources.MezeoVault;
+            //else
+            //    cnotificationManager.NotificationHandler.Icon = Properties.Resources.mezeosyncstatus_syncing;
 
             cnotificationManager.NotificationHandler.ShowBalloonTip(1, LanguageTranslator.GetValue("TrayBalloonSyncStatusText"),
                                                                            LanguageTranslator.GetValue("TrayBalloonSyncResumeText"),

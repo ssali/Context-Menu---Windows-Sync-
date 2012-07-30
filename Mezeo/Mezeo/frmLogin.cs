@@ -845,11 +845,13 @@ namespace Mezeo
             if (!syncManager.IsSyncPaused())
             {
                 syncPausedOperation();
+                syncManager.resetAllControls();
                 return;
             }
             if (syncManager.IsSyncPaused())
             {
                 syncResumeOperation();
+                syncManager.resetAllControls();
                 return;
             }
         }
