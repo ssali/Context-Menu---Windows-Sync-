@@ -1985,24 +1985,28 @@ namespace Mezeo
                 {
                     return nStatusCode;
                 }
-                if (strDBEtag == strEtagCloud)
-                {
-                    if (strKey != strDBKey)
-                    {
-                        if (File.Exists(strPath))
-                        {
-                            nqEventCdmiDelete(BasicInfo.SyncDirPath + "\\" + strDBKey, strDBKey);
-                        }
-                        else
-                        {
-                            if(File.Exists(BasicInfo.SyncDirPath + "\\" + strDBKey))
-                                File.Move(BasicInfo.SyncDirPath + "\\" + strDBKey, strPath);
-                        }
 
-                        dbHandler.Update(DbHandler.TABLE_NAME, DbHandler.KEY , strKey , DbHandler.KEY , strDBKey );
+                if (strKey != strDBKey)
+                {
+                    if (File.Exists(strPath))
+                    {
+                        nqEventCdmiDelete(BasicInfo.SyncDirPath + "\\" + strDBKey, strDBKey);
                     }
+                    else
+                    {
+                        if (File.Exists(BasicInfo.SyncDirPath + "\\" + strDBKey))
+                            File.Move(BasicInfo.SyncDirPath + "\\" + strDBKey, strPath);
+                    }
+
+                    // Let's update the name as well.
+                    string fileName = strPath.Substring(strPath.LastIndexOf("\\") + 1);
+                    dbHandler.Update(DbHandler.TABLE_NAME, DbHandler.FILE_NAME, fileName, DbHandler.KEY, strDBKey);
+
+                    // Update the key for the entry.
+                    dbHandler.Update(DbHandler.TABLE_NAME, DbHandler.KEY, strKey, DbHandler.KEY, strDBKey);
                 }
-                else
+
+                if (strDBEtag != strEtagCloud)
                 {
                     if ("FILE" == nsResult.StrType)
                     {
