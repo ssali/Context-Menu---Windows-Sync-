@@ -4148,6 +4148,14 @@ namespace Mezeo
                 return false;
             }
 
+            // Look to see if we are offline.  A negative value is a socket error such as
+            // 'cannot connect to server (-1)' or 'cannot resolve address (-2)'.Z
+            if (nStatusCode < 0)
+            {
+                SetCanNotTalkToServer(true);
+                return false;
+            }
+
             // Grab some events from the notification queue if any exist.
             pNQDetails = cMezeoFileCloud.NQGetData(BasicInfo.ServiceUrl + cLoginDetails.szNQParentUri, BasicInfo.GetQueueName(), 10, ref nStatusCode);
             if (nStatusCode == ResponseCode.NQGETDATA)
