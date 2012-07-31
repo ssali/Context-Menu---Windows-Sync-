@@ -7,6 +7,22 @@ using System.Data;  // Needed to use the DbHandler stuff.
 
 namespace Mezeo
 {
+    /// <summary>
+    /// The EventQueue class acts as the job queue for the application.  All events MUST be added via this class
+    /// in order to be properly processed.
+    /// 
+    /// When events are added to the queue, the class will examine the event as well as the current contents of
+    /// the queue and perform any optimizations, translations, or changes that it determines are needed.  For
+    /// example, if an object has a delete event followed in a short timespan by a create event, then the class
+    /// will ignore the create event and translate the existing delete event into a move operation.
+    /// 
+    /// Once events have settled down (are older than the TIME_WITHOUT_EVENTS value), then they are moved from
+    /// the eventListCandidates list into the actual job queue in the database where they are persisted until
+    /// processed.
+    /// 
+    /// All events for partial file transfers are ignored.  They can be identified by having the mac address of
+    /// the computer and '.partial' in the current or old file name.
+    /// </summary>
     public static class EventQueue
     {
         private static DbHandler dbHandler;
@@ -14,16 +30,22 @@ namespace Mezeo
         private static String m_strOriginal;
         private static String m_strPartial;
 
-        // Time without receiving events for a resource before
-        // it is moved from evenListCandidates to eventList.
-        //private static int TIME_WITHOUT_EVENTS = 20000;  // 20 seconds as milliseconds.
+        /// <summary>
+        /// Time (in milliseconds) without receiving events for a resource before it is moved from
+        /// evenListCandidates to eventList.  The current default is 20 seconds.
+        /// </summary>
         private static int TIME_WITHOUT_EVENTS = Convert.ToInt32(global::Mezeo.Properties.Resources.BrSettleTimer);
-        // 20 seconds as 20000 milliseconds.
         
-        // A list of events that have not had any activity in the last TIME_WITHOUT_EVENTS.
+        /// <summary>
+        /// A list of events that have not had any activity in the last TIME_WITHOUT_EVENTS.  The
+        /// list acts as a temporary holding area for additional event consolidation before the
+        /// events are persisted to the local database and the list is emptied.
+        /// </summary>
         private static List<LocalEvents> eventList = new List<LocalEvents>();
 
-        // A list of events for resources that are still receiving/generating events.
+        /// <summary>
+        /// A list of events for resources that are still receiving/generating events.
+        /// </summary>
         private static List<LocalEvents> eventListCandidates = new List<LocalEvents>();
 
         private static Object thisLock = new Object();
@@ -31,6 +53,12 @@ namespace Mezeo
         public delegate void WatchCompleted();
         public static event WatchCompleted WatchCompletedEvent;
 
+        /// <summary>
+        /// The init method that MUST be called before the class can be properly used.  This method
+        /// kicks off the timer for event settleing and uses the supplied mac address to assemble
+        /// the strings used to check whether or not an event should be ignored.
+        /// </summary>
+        /// <param name="strMacAdd"></param>
         public static void InitEventQueue(String strMacAdd)
         {
             timer = new System.Timers.Timer();
@@ -44,6 +72,13 @@ namespace Mezeo
             m_strPartial = ".partial." + m_strMacAdd;
         }
 
+        /// <summary>
+        /// Wrapper function to return a connection to the database.  This way if the database must
+        /// be manipulated in some way and the connections reset, the code doesn't have to worry
+        /// about the member variable only having been initialized in the constructor and crashing
+        /// under certain conditions.
+        /// </summary>
+        /// <returns></returns>
         private static DbHandler GetDbHandler()
         {
             if (dbHandler == null)
@@ -54,14 +89,15 @@ namespace Mezeo
             return dbHandler;
         }
 
-        // Collate the events before finally releasing them to be acted on.
+        /// <summary>
+        /// Collate the events before finally releasing them to be acted on.
+        /// Go through the list of events and see what can be pruned out.
+        /// For now, just look at items that are REMOVED.  If they don't
+        /// exist in the database, then they were never created in the
+        /// cloud and all related events can be removed as a NOOP.
+        /// </summary>
         public static void CollateEvents()
         {
-            // Go through the list of events and see what can be pruned out.
-            // For now, just look at items that are REMOVED.  If they don't
-            // exist in the database, then they were never created in the
-            // cloud and all related events can be removed as a NOOP.
-
             if (0 < eventList.Count)
             {
                 // Loop backwards theough the list.
@@ -83,6 +119,7 @@ namespace Mezeo
                             eventsToRemove.Add(lEvent);
 
                             // Now look for related events (before this event) and throw them out as well.
+                            // TODO: Revisit this code and verify the logic.  I think this inner loop should be between the create and delete events only.  Not from the start of the list up to the create event.
                             for (int indexRemove = 0; indexRemove < index; indexRemove++)
                             {
                                 if ((eventList[indexRemove].FileName == lEvent.FileName) && (eventList[indexRemove].FullPath == lEvent.FullPath))
@@ -110,6 +147,11 @@ namespace Mezeo
             }
         }
 
+        /// <summary>
+        /// Determine if a file is locked by another process.
+        /// </summary>
+        /// <param name="filePath">is the full path for the file to be checked.</param>
+        /// <returns>a true if the file is locked.</returns>
         private static bool IsFileLocked(String filePath)
         {
             FileStream stream = null;
@@ -144,6 +186,19 @@ namespace Mezeo
             return false;
         }
 
+        /// <summary>
+        /// The callback for the timer when TIME_WITHOUT_EVENTS has passed.  The callback will then look
+        /// through the eventListCandidates list looking for events older than TIME_WITHOUT_EVENTS and
+        /// move them into the eventList list to be processed by CollateEvents().  Any events left in
+        /// eventList after the CollateEvents() call are then persisted to the database to be processed
+        /// at a later time by the sync thread.
+        /// 
+        /// If events were persisted to the job queue in the database, or other events exist there already,
+        /// then the WatchCompletedEvent() delegate is called to notify it that events are waiting to be
+        /// processed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public static void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             bool bNewEventExists = false;
@@ -222,12 +277,20 @@ namespace Mezeo
             }
         }
 
+        /// <summary>
+        /// A method to check whether or not the event job queue is empty.
+        /// </summary>
+        /// <returns>a true if there are events in the database waiting to be processed.</returns>
         public static bool QueueNotEmpty()
         {
             Int64 jobCount = GetDbHandler().GetJobCount();
             return (jobCount > 0);
         }
 
+        /// <summary>
+        /// Retrieve the next local event in the queue to be processed.
+        /// </summary>
+        /// <returns>an LocalEvents object populated with the event information if an event is waiting or a null if no local events exist.</returns>
         public static LocalEvents GetCurrentQueueItem()
         {
             LocalEvents localEvent = null;

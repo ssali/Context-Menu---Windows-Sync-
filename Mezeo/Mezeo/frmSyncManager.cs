@@ -20,6 +20,10 @@ using System.Web;
 
 namespace Mezeo
 {
+    /// <summary>
+    /// This is the main form for the application.  It is also the class that contains the processing code for events
+    /// generated both locally and on the server.  The general process flow is that 
+    /// </summary>
     public partial class frmSyncManager : Form
     {
        
@@ -125,7 +129,7 @@ namespace Mezeo
 
             LoadResources();
 
-            watcher = new Watcher(lockObject, BasicInfo.SyncDirPath);
+            watcher = new Watcher(BasicInfo.SyncDirPath);
             EventQueue.WatchCompletedEvent += new EventQueue.WatchCompleted(queue_WatchCompletedEvent);
             CheckForIllegalCrossThreadCalls = false;
 
