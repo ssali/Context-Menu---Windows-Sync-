@@ -293,7 +293,9 @@ namespace Mezeo
                         // Moving from offline to online.
                         canNotTalktoTheServer = talkToTheServer;
                         SyncOnlineMessage();
-                        resetAllControls();
+                        // fogbugzid: 2336 when coming back online - kickstart sync
+                        SyncNow();
+                       //resetAllControls();
                     }
                     else if ((canNotTalktoTheServer == false) && (talkToTheServer == true))
                     {
@@ -311,7 +313,9 @@ namespace Mezeo
                     // Moving from offline to online.
                     canNotTalktoTheServer = talkToTheServer;
                     SyncOnlineMessage();
-                    resetAllControls();
+                    // fogbugzid: 2336 when coming back online - kickstart sync
+                    SyncNow();
+                  //resetAllControls();
                 }
                 else if ((canNotTalktoTheServer == false) && (talkToTheServer == true))
                 {
