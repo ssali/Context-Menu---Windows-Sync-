@@ -112,16 +112,27 @@ namespace Mezeo
                 FileInfo fInfo = null;
                 DirectoryInfo dInfo = null;
                 bool IsFile = false;
+                String strPath = BasicInfo.SyncDirPath + "\\" + key;
 
-                if (Directory.Exists(BasicInfo.SyncDirPath + "\\" + key))
+                try
                 {
-                    dInfo = new DirectoryInfo(BasicInfo.SyncDirPath + "\\" + key);
+                    if (Directory.Exists(strPath))
+                    {
+                        dInfo = new DirectoryInfo(strPath);
+                    }
+                    else
+                    {
+                        IsFile = true;
+                        fInfo = new FileInfo(strPath);
+                    }
                 }
-                else
+                catch (System.IO.PathTooLongException ex)
                 {
-                    IsFile = true;
-                    fInfo = new FileInfo(BasicInfo.SyncDirPath + "\\" + key);
+                    // Skip this item.
+                    LogWrapper.LogMessage("OfflineWatcher - PrepareStructureList", "Caught exception: " + ex.Message);
+                    continue;
                 }
+
 
                 if(!currentStructure.Contains(key))
                 {

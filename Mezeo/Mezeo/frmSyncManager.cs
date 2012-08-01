@@ -1946,11 +1946,21 @@ namespace Mezeo
                 bool bLocalFileDiffers = false;
                 if (strDBKey.Trim().Length != 0)
                 {
-                    FileInfo fileInfo = new FileInfo(strPath);
-                    if ((fileInfo != null) && (0 == (fileInfo.Attributes & FileAttributes.Directory)) && fileInfo.Exists && (fileInfo.Length != nqDetail.lSize))
-                        bLocalFileDiffers = true;
-                    if ((0 == (fileInfo.Attributes & FileAttributes.Directory)) && (!System.IO.File.Exists(strPath)))
-                        bLocalFileDiffers = true;
+                    try
+                    {
+                        FileInfo fileInfo = new FileInfo(strPath);
+                        if ((fileInfo != null) && (0 == (fileInfo.Attributes & FileAttributes.Directory)) && fileInfo.Exists && (fileInfo.Length != nqDetail.lSize))
+                            bLocalFileDiffers = true;
+                        if ((0 == (fileInfo.Attributes & FileAttributes.Directory)) && (!System.IO.File.Exists(strPath)))
+                            bLocalFileDiffers = true;
+                    }
+                    catch (System.IO.PathTooLongException ex)
+                    {
+                        // Skip this item.
+                        LogWrapper.LogMessage("frmSyncManager - UpdateFromNQ", "Caught exception: " + ex.Message);
+                        nStatus = 1;
+                        return nStatus;
+                    }
                 }
 
                 if ((strDBKey.Trim().Length == 0) || bLocalFileDiffers)
@@ -2303,7 +2313,14 @@ namespace Mezeo
             else
             {
                 MarkParentsStatus(strPath, DB_STATUS_IN_PROGRESS);
-                Directory.CreateDirectory(strPath);
+                try
+                {
+                    Directory.CreateDirectory(strPath);
+                }
+                catch (System.IO.PathTooLongException ex)
+                {
+                    LogWrapper.LogMessage("frmSyncManager - nqEventCdmiCreate", "Caught exception: " + ex.Message);
+                }
 
                 strEtag = cMezeoFileCloud.GetETag(nsResult.StrContentsUri, ref refCode);
                 if (refCode == ResponseCode.LOGINFAILED1 || refCode == ResponseCode.LOGINFAILED2)
