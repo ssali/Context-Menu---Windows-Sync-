@@ -4181,6 +4181,13 @@ namespace Mezeo
                 return false;
             }
 
+            // If there is no dbHandler object for some reason, create one.
+            if (null == dbHandler)
+            {
+                dbHandler = new DbHandler();
+                dbHandler.OpenConnection();
+            }
+
             // Grab some events from the notification queue if any exist.
             pNQDetails = cMezeoFileCloud.NQGetData(BasicInfo.ServiceUrl + cLoginDetails.szNQParentUri, BasicInfo.GetQueueName(), 10, ref nStatusCode);
             if (nStatusCode == ResponseCode.NQGETDATA)
