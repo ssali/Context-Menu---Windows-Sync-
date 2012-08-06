@@ -4135,6 +4135,7 @@ namespace Mezeo
         private bool PopulateNQEvents()
         {
             int newEvents = 0;
+            int eventsToDelete = 0;
             int nStatusCode = 0;
             NQDetails[] pNQDetails = null;
 
@@ -4202,8 +4203,9 @@ namespace Mezeo
                             dbHandler.AddNQEvent(nq);
                             newEvents++;
                         }
+                        eventsToDelete++;
                     }
-                    cMezeoFileCloud.NQDeleteValue(BasicInfo.ServiceUrl + cLoginDetails.szNQParentUri, BasicInfo.GetQueueName(), newEvents, ref nStatusCode);
+                    cMezeoFileCloud.NQDeleteValue(BasicInfo.ServiceUrl + cLoginDetails.szNQParentUri, BasicInfo.GetQueueName(), eventsToDelete, ref nStatusCode);
                     messageMax = (int)dbHandler.GetJobCount();
                 }
             }
