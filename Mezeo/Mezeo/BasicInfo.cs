@@ -231,9 +231,18 @@ namespace Mezeo
             password = regHandler.Read(PASSWORD, Microsoft.Win32.RegistryValueKind.Binary, true);
             serviceUrl = regHandler.Read(SERVICEURL, Microsoft.Win32.RegistryValueKind.Binary, false);
             syncDirPath = regHandler.Read(SYNCDIRPATH, Microsoft.Win32.RegistryValueKind.String, false);
-            lastSync = DateTime.Parse(regHandler.Read(LASTSYNC, Microsoft.Win32.RegistryValueKind.Binary, false));
             autoSync = Convert.ToBoolean(regHandler.Read(AUTOSYNC, Microsoft.Win32.RegistryValueKind.Binary, false));
             isInitailSync = Convert.ToBoolean(regHandler.Read(INITIALSYNC, Microsoft.Win32.RegistryValueKind.Binary, false));
+            try
+            {
+                string regValue = regHandler.Read(LASTSYNC, Microsoft.Win32.RegistryValueKind.Binary, false);
+                if (null != regValue)
+                    lastSync = DateTime.Parse(regValue);
+            }
+            catch (Exception ex)
+            {
+                LogWrapper.LogMessage("BasicInfo - ReadRegValue", "Caught exception: " + ex.Message);
+            }
             try
             {
                 string regValue = regHandler.Read(LOGGING, Microsoft.Win32.RegistryValueKind.Binary, false);
@@ -246,7 +255,6 @@ namespace Mezeo
             }
             try
             {
-                lastSync = DateTime.Parse(regHandler.Read(LASTSYNC , Microsoft.Win32.RegistryValueKind.Binary, false));
                 string regValue = regHandler.Read(LASTUPDATEDCHECK, Microsoft.Win32.RegistryValueKind.Binary, false);
                 if (null != regValue)
                     lastUpdateCheckAt = DateTime.Parse(regValue);

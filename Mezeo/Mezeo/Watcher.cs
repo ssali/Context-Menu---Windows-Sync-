@@ -9,8 +9,8 @@ namespace Mezeo
 {
     /// <summary>
     /// The Watcher class is responsible for gathering up the local file events
-    /// that occur in the sync directory and adding them to the EventQueue for
-    /// further processing.
+    /// that occur in the sync directory, and all child directories, and adding
+    /// them to the EventQueue for further processing.
     /// </summary>
     class Watcher
     {
@@ -26,6 +26,7 @@ namespace Mezeo
         /// receiving.  Specifically the changed, created, deleted, and renamed events.
         /// </summary>
         /// @todo Use the modified event for folders as a hint to walk the entire folder and make sure no events were dropped/missed.
+        /// <param name="folder">is the complete path to the folder to gather events for.</param>
         public Watcher(string folder)
         {
             this.folderToWatch = folder;
