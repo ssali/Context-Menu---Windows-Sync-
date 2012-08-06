@@ -1431,8 +1431,10 @@ namespace MezeoFileSupport
                             pNQDetails[i].StrParentID = pGetValue.parentID;
                             if (pGetValue.objectType == "application/cdmi-container")
                                 pNQDetails[i].StrObjectType = "DIRECTORY";
-                            else
+                            else if (pGetValue.objectType == "application/cdmi-object")
                                 pNQDetails[i].StrObjectType = "FILE";
+                            else
+                                pNQDetails[i].StrObjectType = "UNSUPPORTED_TYPE";
                             pNQDetails[i].StrParentUri = pGetValue.parentURI;
                             pNQDetails[i].StrDomainUri = pGetValue.domainURI;
                             pNQDetails[i].StrObjectName = pGetValue.objectName;
