@@ -308,7 +308,15 @@ namespace Mezeo
                 FileInfo fileInfo = new FileInfo(theEvent.FullPath);
 
                 theEvent.Attributes = fileInfo.Attributes;
-                LogWrapper.LogMessage("EventQueue - FillInFileInfo", "File " + theEvent.FullPath + " attributes are: " + fileInfo.Attributes.ToString());
+
+                // Make sure the path is the long style and not the 8.3.  Expanding zip files creates
+                // old style 8.3 paths in events for files, but not always folders.
+                theEvent.FullPath = fileInfo.DirectoryName + "\\" + fileInfo.Name;
+                theEvent.FileName = theEvent.FullPath.Substring(BasicInfo.SyncDirPath.Length+1);
+
+                LogWrapper.LogMessage("EventQueue - FillInFileInfo", "File " + theEvent.FullPath + " attributes are: " + 
+fileInfo.Attributes.ToString());
+
                 if (fileInfo.Exists)
                 {
                     if (0 == (fileInfo.Attributes & FileAttributes.Directory))
