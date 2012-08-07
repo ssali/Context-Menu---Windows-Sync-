@@ -1777,31 +1777,64 @@ namespace MezeoFileSupport
         public bool OverWriteFile(String strSource, String strDestination, ref int nStatusCode, CallbackIncrementProgress IncProgress)
         {
             nStatusCode = 0;
+            String StrRet = "";
+            String strFileName = strSource;
+            bool success = true;
+
+            int nNameLoc = strSource.LastIndexOf('\\');
+
+            if (nNameLoc > 0)
+                strFileName = strSource.Substring(nNameLoc);
+
+            // Create a new random form boundary using the System time
+            String strBoundary = DateTime.Now.Ticks.ToString("x") + DateTime.Now.Ticks.ToString("x");
+
+            // File payload section
+            String strLoadHeader = "--" + strBoundary + "\r\n";
+            strLoadHeader += "Content-Disposition: form-data; name=\"Filedata\"; filename=\"" + strFileName + "\"\r\n";
+            strLoadHeader += "Content-Type: " + OnGetMimeType(strSource) + "\r\n\r\n";
             HttpWebRequest webRequest = null;
             HttpWebResponse response = null;
 
             try
             {
-                OnPutRequest(ref webRequest, strDestination, strSource, IncProgress);
+                success = OnPostAndPutRequest(ref webRequest, strDestination, strSource, "multipart/form-data; boundary=" + strBoundary, strLoadHeader, "\r\n--" + strBoundary + "--\r\n", "POST", "", IncProgress);
+
                 if (null != webRequest)
                 {
                     response = (HttpWebResponse)webRequest.GetResponse();
-                    nStatusCode = 204;
+                    if (response.StatusCode == HttpStatusCode.Created)
+                    {
+                        nStatusCode = 201;
+                        StrRet = OnGetResponseString(response.GetResponseStream());
+                        StrRet = StrRet.Substring(0, (StrRet.Length - Environment.NewLine.Length));
+                    }
+                    else if (response.StatusCode == HttpStatusCode.NoContent)
+                    {
+                        nStatusCode = 204;
+                    }
+
                     webRequest.Abort();
                     response.Close();
                 }
-                else
-                    nStatusCode = -4;
+                if (!success)
+                {
+                    if (uploadStoppedEvent != null)
+                    {
+                        nStatusCode = -4;
+                        uploadStoppedEvent(strSource, StrRet);
+                    }
+                }
             }
             catch (WebException wEx)
             {
                 nStatusCode = OnException(wEx);
-                return false;
+                success = false;
             }
             catch
             {
                 nStatusCode = -3;
-                return false;
+                success = false;
             }
 
             finally
@@ -1811,8 +1844,7 @@ namespace MezeoFileSupport
                 if (response != null)
                     response.Close();
             }
-
-	        return true;
+            return success;
         }
 
         public ItemResults GetParentName(String strContents, ref int nStatusCode)
