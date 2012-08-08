@@ -18,7 +18,10 @@ namespace Mezeo
         private string hoverText = "";
         private string ballonText = "";
         private string ballonTitleText = "";
-        private Icon trayIcon = Properties.Resources.MezeoVault;
+
+        //private Icon trayIcon = Properties.Resources.MezeoVault;
+        //fogbugzid: 2795 Sync icon should not be in green state before login
+        private Icon trayIcon = Properties.Resources.app_offline;
 
         public NotifyIcon NotificationHandler
         {
