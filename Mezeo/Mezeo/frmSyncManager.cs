@@ -3103,6 +3103,11 @@ namespace Mezeo
                 FileInfo fileInfo = new FileInfo(localEvent.FullPath);
                 if (fileInfo.Exists)
                     attr = fileInfo.Attributes;
+                else if (localEvent.EventType == LocalEvents.EventsType.FILE_ACTION_ADDED)
+                {
+                    // If the file doesn't exist, then we can't upload it.
+                    return 1;
+                }
             }
 
             if (localEvent.EventType == LocalEvents.EventsType.FILE_ACTION_MODIFIED)
@@ -4561,7 +4566,14 @@ namespace Mezeo
                         if (string.IsNullOrEmpty(fileName))
                             syncPath = "";
                         else
-                            syncPath = AboutBox.AssemblyTitle + "\\" + fileName.Substring(BasicInfo.SyncDirPath.Length + 1);
+                        {
+                            // Only remove the local sync path if it is at the start of the given path.
+                            // Otherwise it could appear inside of the other path.
+                            if (0 == fileName.IndexOf(BasicInfo.SyncDirPath))
+                                syncPath = AboutBox.AssemblyTitle + "\\" + fileName.Substring(BasicInfo.SyncDirPath.Length + 1);
+                            else
+                                syncPath = fileName;
+                        }
 
                         lblStatusL3.Text = syncPath;
                         pbScale = 1;
@@ -4596,7 +4608,14 @@ namespace Mezeo
                     if (string.IsNullOrEmpty(fileName))
                         syncPath = "";
                     else
-                        syncPath = AboutBox.AssemblyTitle + "\\" + fileName.Substring(BasicInfo.SyncDirPath.Length + 1);
+                    {
+                        // Only remove the local sync path if it is at the start of the given path.
+                        // Otherwise it could appear inside of the other path.
+                        if (0 == fileName.IndexOf(BasicInfo.SyncDirPath))
+                            syncPath = AboutBox.AssemblyTitle + "\\" + fileName.Substring(BasicInfo.SyncDirPath.Length + 1);
+                        else
+                            syncPath = fileName;
+                    }
 
                     lblStatusL3.Text = syncPath;
 

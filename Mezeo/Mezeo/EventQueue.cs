@@ -48,7 +48,17 @@ namespace Mezeo
         /// </summary>
         private static List<LocalEvents> eventListCandidates = new List<LocalEvents>();
 
+        /// <summary>
+        /// A list of events for folders.  Periodically, a thread will be kicked off to process
+        /// the folders in this list.  The processing will be to generate events for the children
+        /// of the folders in this list.  This will handle dropped/missing events and it will
+        /// handle file uploads for folders that were added to the sync directory and then moved
+        /// before the contents were actually uploaded to the server.
+        /// </summary>
+        private static List<LocalEvents> eventListFolders = new List<LocalEvents>();
+
         private static Object thisLock = new Object();
+        private static Object folderLock = new Object();
         private static System.Timers.Timer timer;
         public delegate void WatchCompleted();
         public static event WatchCompleted WatchCompletedEvent;
@@ -301,6 +311,14 @@ namespace Mezeo
             return localEvent;
         }
 
+        /// <summary>
+        /// Fill in the file and directory information for the given event.  Sets the IsDirectory and IsFile
+        /// flags and the Attributes as well so that the information doesn't have to be looked up later.  This
+        /// is especially useful if the object is being moved around or renamed.
+        /// The function also makes sure the FullPath and FileName are in the long format rather than the older
+        /// 8.3 name format so that all of the database keys and paths are in a single format.
+        /// </summary>
+        /// <param name="theEvent">is populated with all of the event information</param>
         public static void FillInFileInfo(ref LocalEvents theEvent)
         {
             try
@@ -342,6 +360,14 @@ fileInfo.Attributes.ToString());
             }
         }
 
+        /// <summary>
+        /// Takes the given event and adds it to the candidate event list after some preprocessing.
+        /// The preprocessing includes things like combining DELETE/ADD events into a single MOVE event
+        /// when the time difference between the events is short enough to justify the guess.  It also
+        /// ignores events for objects that are hidden or temporary since those objects are not synced
+        /// with the server.
+        /// </summary>
+        /// <param name="newEvent">is the event information supplied by Watcher to be added to the event queue.</param>
         public static void Add(LocalEvents newEvent)
         {
             // Ignore events for anything that has .partial.m_strMacAdd or .original.m_strMacAdd in the name.
@@ -366,6 +392,55 @@ fileInfo.Attributes.ToString());
             if (newEvent.EventType != LocalEvents.EventsType.FILE_ACTION_REMOVED)
             {
                 FillInFileInfo(ref newEvent);
+
+                // Ignore events for objects that are HIDDEN or TEMPORARY.
+                if ((newEvent.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden || (newEvent.Attributes & FileAttributes.Temporary) == FileAttributes.Temporary)
+                    return;
+
+                // Do some extra stuff for directories.
+                if (newEvent.IsDirectory)
+                {
+                    bool foundEntry = false;
+                    if (1 == newEvent.EventTimeStamp.Year)
+                        newEvent.EventTimeStamp = DateTime.Now;
+
+                    // If this is a MODIFIED event for a folder, then update the event time in the list.
+                    if (newEvent.EventType == LocalEvents.EventsType.FILE_ACTION_MODIFIED)
+                    {
+                        lock (folderLock)
+                        {
+                            foreach (LocalEvents lId in eventListFolders)
+                            {
+                                if (lId.FullPath == newEvent.FullPath)
+                                {
+                                    lId.EventTimeStamp = newEvent.EventTimeStamp;
+                                    foundEntry = true;
+                                    break;
+                                }
+                            }
+                            if (false == foundEntry)
+                                eventListFolders.Add(newEvent);
+                        }
+                    }
+                    else
+                    {
+                        // See if the folder is already in the list.
+                        lock (folderLock)
+                        {
+                            foreach (LocalEvents lId in eventListFolders)
+                            {
+                                if (lId.FullPath == newEvent.FullPath)
+                                {
+                                    lId.EventTimeStamp = newEvent.EventTimeStamp;
+                                    foundEntry = true;
+                                    break;
+                                }
+                            }
+                            if (false == foundEntry)
+                                eventListFolders.Add(newEvent);
+                        }
+                    }
+                }
             }
 
             lock (thisLock)
