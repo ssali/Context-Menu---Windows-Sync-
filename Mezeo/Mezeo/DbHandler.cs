@@ -1104,7 +1104,8 @@ namespace Mezeo
             SQLiteDataReader sqlDataReader = sqlCommand.ExecuteReader();
             sqlDataReader.Read();
 
-            result = sqlDataReader.GetString(0);
+            if (sqlDataReader.HasRows)
+                result = sqlDataReader.GetString(0);
 
             sqlDataReader.Close();
             sqlConnection.Close();
@@ -1122,7 +1123,8 @@ namespace Mezeo
             SQLiteDataReader sqlDataReader = sqlCommand.ExecuteReader();
             sqlDataReader.Read();
 
-            result = sqlDataReader.GetString(0);
+            if (sqlDataReader.HasRows)
+                result = sqlDataReader.GetString(0);
 
             sqlDataReader.Close();
             sqlConnection.Close();

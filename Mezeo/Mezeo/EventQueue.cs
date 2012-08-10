@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Data;  // Needed to use the DbHandler stuff.
+using System.Threading; //Needed for thread (eventlistfolder)
 
 namespace Mezeo
 {
@@ -64,6 +65,12 @@ namespace Mezeo
         public static event WatchCompleted WatchCompletedEvent;
 
         /// <summary>
+        /// This thread will basically check iteams in each folder and make sure events for each item is created
+        /// in database. 
+        /// </summary>
+        static Thread checkingDirectoryThread = null;
+        
+        /// <summary>
         /// The init method that MUST be called before the class can be properly used.  This method
         /// kicks off the timer for event settleing and uses the supplied mac address to assemble
         /// the strings used to check whether or not an event should be ignored.
@@ -80,7 +87,7 @@ namespace Mezeo
             m_strMacAdd = strMacAdd;
             m_strOriginal = ".original." + m_strMacAdd;
             m_strPartial = ".partial." + m_strMacAdd;
-        }
+         }
 
         /// <summary>
         /// Wrapper function to return a connection to the database.  This way if the database must
@@ -97,6 +104,103 @@ namespace Mezeo
                 dbHandler.OpenConnection();
             }
             return dbHandler;
+        }
+
+
+        public static void AddToQueue(string filesEntry)
+        {
+            string keyname = filesEntry.Substring(BasicInfo.SyncDirPath.Length + 1);
+
+            string result = dbHandler.GetString(DbHandler.TABLE_NAME, DbHandler.KEY, DbHandler.KEY + " = '" + keyname + "';");
+
+            LocalEvents lEvent = new LocalEvents();
+            lEvent.FileName = keyname;
+
+            lEvent.FullPath = filesEntry;
+
+            lEvent.OldFileName = "";
+            lEvent.OldFullPath = "";
+            lEvent.EventTimeStamp = DateTime.Now;
+   
+            if (result == null || result == "")
+            {
+                //create or add event
+                lEvent.EventType = LocalEvents.EventsType.FILE_ACTION_ADDED;
+            }
+            else
+            {
+                lEvent.EventType = LocalEvents.EventsType.FILE_ACTION_MODIFIED;
+            }
+
+            Add(lEvent);
+        }
+
+        /// <summary>
+        /// This method will be called when the checkingDirectoryThread thread is started.
+        /// </summary>
+        /// @todo Optimize when we walk the directory looking for changes. ex only do modify event if 
+        /// item differs from database entry.
+        public static void checkingDirectoryThread_DoWork()
+        {
+           List<LocalEvents> listOfFolders = ListeventListFolders();
+           foreach (LocalEvents di in listOfFolders)
+           {
+               if (Directory.Exists(di.FullPath))
+               {
+
+                   foreach (string dirs in Directory.GetDirectories(di.FullPath, "*.*", SearchOption.AllDirectories))
+                   {
+                     AddToQueue(dirs);
+                   }
+
+                   foreach (string files in Directory.GetFiles(di.FullPath, "*.*", SearchOption.AllDirectories))
+                   {
+                     AddToQueue(files);
+                   }
+
+               }
+           }
+            //Console.WriteLine("worker thread: working...");
+            //Console.WriteLine("worker thread: terminating gracefully.");
+        }
+
+
+        /// <summary>
+        /// This function will return localeventlist 
+        /// </summary>
+        /// <returns></returns>
+        public static List<LocalEvents> ListeventListFolders()
+        {
+            DateTime curTime = DateTime.Now;
+
+            List<LocalEvents> localeventList = new List<LocalEvents>();
+            List<LocalEvents> eventsToRemove = new List<LocalEvents>();
+
+            lock (folderLock)
+            {
+                foreach(LocalEvents li in eventListFolders)
+                {
+                    TimeSpan diff = curTime - li.EventTimeStamp;
+                    if (diff.TotalMilliseconds >= TIME_WITHOUT_EVENTS)
+                    {
+                        LocalEvents lEvent = new LocalEvents();
+                        lEvent = li;
+                        lEvent.EventTimeStamp = li.EventTimeStamp;
+                        localeventList.Add(lEvent);
+                        eventsToRemove.Add(li);
+                    }
+                   
+                }
+
+                foreach (LocalEvents id in eventsToRemove)
+                {
+                    eventListFolders.Remove(id);
+                }
+
+                eventsToRemove.Clear();
+
+            }
+            return localeventList;
         }
 
         /// <summary>
@@ -285,6 +389,13 @@ namespace Mezeo
                         WatchCompletedEvent();
                 }
             }
+                        
+            //start checkingDirectoryThread if it is not running
+            if(checkingDirectoryThread == null || checkingDirectoryThread.IsAlive == false)
+            {
+                checkingDirectoryThread = new Thread(checkingDirectoryThread_DoWork);
+                checkingDirectoryThread.Start();
+            }
         }
 
         /// <summary>
@@ -405,40 +516,19 @@ fileInfo.Attributes.ToString());
                         newEvent.EventTimeStamp = DateTime.Now;
 
                     // If this is a MODIFIED event for a folder, then update the event time in the list.
-                    if (newEvent.EventType == LocalEvents.EventsType.FILE_ACTION_MODIFIED)
+                    lock (folderLock)
                     {
-                        lock (folderLock)
+                        foreach (LocalEvents lId in eventListFolders)
                         {
-                            foreach (LocalEvents lId in eventListFolders)
+                            if (lId.FullPath == newEvent.FullPath)
                             {
-                                if (lId.FullPath == newEvent.FullPath)
-                                {
-                                    lId.EventTimeStamp = newEvent.EventTimeStamp;
-                                    foundEntry = true;
-                                    break;
-                                }
+                                lId.EventTimeStamp = newEvent.EventTimeStamp;
+                                foundEntry = true;
+                                break;
                             }
-                            if (false == foundEntry)
-                                eventListFolders.Add(newEvent);
                         }
-                    }
-                    else
-                    {
-                        // See if the folder is already in the list.
-                        lock (folderLock)
-                        {
-                            foreach (LocalEvents lId in eventListFolders)
-                            {
-                                if (lId.FullPath == newEvent.FullPath)
-                                {
-                                    lId.EventTimeStamp = newEvent.EventTimeStamp;
-                                    foundEntry = true;
-                                    break;
-                                }
-                            }
-                            if (false == foundEntry)
-                                eventListFolders.Add(newEvent);
-                        }
+                        if (false == foundEntry)
+                            eventListFolders.Add(newEvent);
                     }
                 }
             }
