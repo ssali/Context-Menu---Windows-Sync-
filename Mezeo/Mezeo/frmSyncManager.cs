@@ -4088,7 +4088,7 @@ namespace Mezeo
             return nResultStatus;
         }
 
-        private void GetNextEvent(ref LocalEvents lEvent, ref NQDetails nqEvent, ref LocalItemDetails localItemDetails)
+        private void GetNextEvent(ref LocalEvents lEvent, ref NQDetails nqEvent, ref LocalItemDetails localItemDetails, ref string strDisplayName)
         {
             bool usePriorityQueueLogic = false;
             if (usePriorityQueueLogic)
@@ -4135,6 +4135,13 @@ namespace Mezeo
                     }
                 }
             }
+
+            if (null != lEvent)
+                strDisplayName = lEvent.FullPath;
+            else if (null != nqEvent)
+                strDisplayName = nqEvent.StrObjectName;
+            else if (null != localItemDetails)
+                strDisplayName = localItemDetails.Path;
         }
 
         private bool PopulateNQEvents()
@@ -4223,6 +4230,7 @@ namespace Mezeo
             LocalEvents lEvent = null;
             NQDetails nqEvent = null;
             LocalItemDetails localItemDetails = null;
+            string strDisplayName = null;
             int nStatus = 0;
             int previousInitialCount = (int)dbHandler.GetInitialSyncEventCount(); 
             int currentInitialCount = 0;
@@ -4236,13 +4244,13 @@ namespace Mezeo
             // See if there are any events in the queue.  Local events take priority over NQ.
             // LocalItemDetails (initial sync events) take priority over local events.
             resetAllControls();
-            GetNextEvent(ref lEvent, ref nqEvent, ref localItemDetails);
+            GetNextEvent(ref lEvent, ref nqEvent, ref localItemDetails, ref strDisplayName);
 
             // If there are no more events in the queue, then see if the server has any more that need processing.
             if (((null == lEvent) && (null == nqEvent) && (null == localItemDetails)) && !IsSyncPaused())
             {
                 PopulateNQEvents();
-                GetNextEvent(ref lEvent, ref nqEvent, ref localItemDetails);
+                GetNextEvent(ref lEvent, ref nqEvent, ref localItemDetails, ref strDisplayName);
             }
             
             // Process the events 1 at a time in priority order.
@@ -4251,6 +4259,11 @@ namespace Mezeo
                 // Increment the counter for the message text.
                 messageValue++;
                 messageMax = (int)dbHandler.GetJobCount();
+
+                // Update the path of for the event being processed.
+                ShowOtherProgressBar(strDisplayName);
+
+                // Update the display.
                 showProgress();
 
                 if (localItemDetails != null)
@@ -4325,7 +4338,8 @@ namespace Mezeo
                 lEvent = null;
                 nqEvent = null;
                 localItemDetails = null;
-                GetNextEvent(ref lEvent, ref nqEvent, ref localItemDetails);
+                strDisplayName = null;
+                GetNextEvent(ref lEvent, ref nqEvent, ref localItemDetails, ref strDisplayName);
 
                 // If there are no more events in the queue, then see if the server has any more that need processing.
                 if ((lEvent == null) && (nqEvent == null) && (null == localItemDetails))
@@ -4333,7 +4347,7 @@ namespace Mezeo
                     if (!IsSyncPaused() && !CanNotTalkToServer())
                     {
                         PopulateNQEvents();
-                        GetNextEvent(ref lEvent, ref nqEvent, ref localItemDetails);
+                        GetNextEvent(ref lEvent, ref nqEvent, ref localItemDetails, ref strDisplayName);
                     }
                 }
                 currentInitialCount = (int)dbHandler.GetInitialSyncEventCount();

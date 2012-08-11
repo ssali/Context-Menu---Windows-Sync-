@@ -990,17 +990,52 @@ namespace Mezeo
             return item;
         }
 
-        public int UpdateRenamedOrMovedKey(string newValues, string oldValue)
+        /// <summary>
+        /// Replace/update the keys for children when a container has been moved or renamed.
+        /// The oldValue portion of the key (only the first instance on the left) should be
+        /// replaced with newValue.  A blind replace will cause substrings to be incorrectly
+        /// replaced so a single query solution does not work.
+        /// Note:  I read the results into an array and then iterate through the array.
+        ///        This is due to the fact that SQLite complains about the database being
+        ///        locked if I try to update the database while looping through the results
+        ///        even though I aquire a new connection.
+        /// </summary>
+        /// <param name="newValue">is the new key for the entry.</param>
+        /// <param name="oldValue">is the existing value for the entry.</param>
+        /// <returns></returns>
+        public int UpdateRenamedOrMovedKey(string newValue, string oldValue)
         {
-            // Replace/update the key when a container has been moved or renamed.
-            // update table_name set key = replace(key, '<old_val>', '<new_val>') where key like <old_val>/%'; 
-            string query = "update " + TABLE_NAME + " set " + KEY + " = replace(" + KEY + ", '" + EscapeString(oldValue) + "', '" + EscapeString(newValues) + "') where " + KEY + " like '" + EscapeString(oldValue) + "%';";
             int result = -1;
+
+            // Update the exact matching entry.
+            Update(DbHandler.TABLE_NAME, DbHandler.KEY, newValue, DbHandler.KEY, oldValue);
+
+            // Find any children of the entry.
+            List<string> keyList = new List<string>();
+            string query = "select " + KEY + " from " + TABLE_NAME + " where " + KEY + " like '" + EscapeString(oldValue) + "\\%';";
 
             SQLiteConnection sqlConnection = OpenConnection();
             SQLiteCommand sqlCommand = new SQLiteCommand(query, sqlConnection);
-            result = sqlCommand.ExecuteNonQuery();
+            SQLiteDataReader sqlDataReader = sqlCommand.ExecuteReader();
+
+            // Note:  I read the results into an array and then iterate through the array.
+            //        This is due to the fact that SQLite complains about the database being
+            //        locked if I try to update the database while looping through the results
+            //        even though I aquire a new connection.
+            while (sqlDataReader.Read())
+            {
+                keyList.Add(sqlDataReader.GetString(0));
+            }
+
+            sqlDataReader.Close();
             sqlConnection.Close();
+
+            // Now update any children that were found.
+            foreach (string strKey in keyList)
+            {
+                string strNewValue = newValue + strKey.Substring(oldValue.Length);
+                Update(DbHandler.TABLE_NAME, DbHandler.KEY, strNewValue, DbHandler.KEY, strKey);
+            }
 
             return result;
         }

@@ -106,7 +106,6 @@ namespace Mezeo
             return dbHandler;
         }
 
-
         public static void AddToQueue(string filesEntry)
         {
             string keyname = filesEntry.Substring(BasicInfo.SyncDirPath.Length + 1);
@@ -121,7 +120,7 @@ namespace Mezeo
             lEvent.OldFileName = "";
             lEvent.OldFullPath = "";
             lEvent.EventTimeStamp = DateTime.Now;
-   
+
             if (result == null || result == "")
             {
                 //create or add event
@@ -147,7 +146,6 @@ namespace Mezeo
            {
                if (Directory.Exists(di.FullPath))
                {
-
                    foreach (string dirs in Directory.GetDirectories(di.FullPath, "*.*", SearchOption.AllDirectories))
                    {
                      AddToQueue(dirs);
@@ -157,13 +155,11 @@ namespace Mezeo
                    {
                      AddToQueue(files);
                    }
-
                }
            }
             //Console.WriteLine("worker thread: working...");
             //Console.WriteLine("worker thread: terminating gracefully.");
         }
-
 
         /// <summary>
         /// This function will return localeventlist 
@@ -189,7 +185,6 @@ namespace Mezeo
                         localeventList.Add(lEvent);
                         eventsToRemove.Add(li);
                     }
-                   
                 }
 
                 foreach (LocalEvents id in eventsToRemove)
@@ -198,8 +193,8 @@ namespace Mezeo
                 }
 
                 eventsToRemove.Clear();
-
             }
+
             return localeventList;
         }
 
@@ -389,7 +384,7 @@ namespace Mezeo
                         WatchCompletedEvent();
                 }
             }
-                        
+
             //start checkingDirectoryThread if it is not running
             if(checkingDirectoryThread == null || checkingDirectoryThread.IsAlive == false)
             {
