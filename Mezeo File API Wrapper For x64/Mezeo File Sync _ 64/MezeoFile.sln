@@ -1,23 +1,39 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Mezeo File Sync", "Mezeo File Sync.vdproj", "{129C4E2B-08D8-46D9-BAB3-3442874F4671}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MezeoFile", "Mezeo File Sync.vdproj", "{129C4E2B-08D8-46D9-BAB3-3442874F4671}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{07F6757D-4E71-4C55-94AE-AF56B5E92261}"
 	ProjectSection(SolutionItems) = preProject
 		ModifyMsiToEnableLaunchApplication.js = ModifyMsiToEnableLaunchApplication.js
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MezeoFileShellExt", "..\..\MezeoFileContextMenu\MezeoFileContextMenu\MezeoFileShellExt.csproj", "{3D733016-2E13-48BC-9EE0-FBCB6756AC04}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Default = Debug|Default
-		Release|Default = Release|Default
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{129C4E2B-08D8-46D9-BAB3-3442874F4671}.Debug|Default.ActiveCfg = Debug
-		{129C4E2B-08D8-46D9-BAB3-3442874F4671}.Debug|Default.Build.0 = Debug
-		{129C4E2B-08D8-46D9-BAB3-3442874F4671}.Release|Default.ActiveCfg = Release
-		{129C4E2B-08D8-46D9-BAB3-3442874F4671}.Release|Default.Build.0 = Release
+		{129C4E2B-08D8-46D9-BAB3-3442874F4671}.Debug|Any CPU.ActiveCfg = Debug
+		{129C4E2B-08D8-46D9-BAB3-3442874F4671}.Debug|Any CPU.Build.0 = Debug
+		{129C4E2B-08D8-46D9-BAB3-3442874F4671}.Debug|x64.ActiveCfg = Debug
+		{129C4E2B-08D8-46D9-BAB3-3442874F4671}.Debug|x64.Build.0 = Debug
+		{129C4E2B-08D8-46D9-BAB3-3442874F4671}.Release|Any CPU.ActiveCfg = Release
+		{129C4E2B-08D8-46D9-BAB3-3442874F4671}.Release|Any CPU.Build.0 = Release
+		{129C4E2B-08D8-46D9-BAB3-3442874F4671}.Release|x64.ActiveCfg = Release
+		{129C4E2B-08D8-46D9-BAB3-3442874F4671}.Release|x64.Build.0 = Release
+		{3D733016-2E13-48BC-9EE0-FBCB6756AC04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D733016-2E13-48BC-9EE0-FBCB6756AC04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D733016-2E13-48BC-9EE0-FBCB6756AC04}.Debug|x64.ActiveCfg = Debug|x64
+		{3D733016-2E13-48BC-9EE0-FBCB6756AC04}.Debug|x64.Build.0 = Debug|x64
+		{3D733016-2E13-48BC-9EE0-FBCB6756AC04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D733016-2E13-48BC-9EE0-FBCB6756AC04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D733016-2E13-48BC-9EE0-FBCB6756AC04}.Release|x64.ActiveCfg = Release|x64
+		{3D733016-2E13-48BC-9EE0-FBCB6756AC04}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

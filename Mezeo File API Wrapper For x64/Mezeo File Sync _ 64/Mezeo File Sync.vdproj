@@ -69,6 +69,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_4876145725FA41699870715256F6DAE1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_653E2F4A8C38A0DEBAB6FEC8543EA456"
         "OwnerKey" = "8:_7534F32F1B53476FAA72264608D6113B"
         "MsmSig" = "8:_UNDEFINED"
@@ -173,6 +179,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_0C381535521C4DF2939A9E4CC4B67A49"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_4876145725FA41699870715256F6DAE1"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -283,6 +295,62 @@
             "Sequence" = "3:2"
             "Identifier" = "8:_0DAE3037_1347_47DA_9983_85E73AE18F5D"
             "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_63DA5E186C3649F89A57186FD0D9651A"
+            {
+            "Name" = "8:Primary output from MezeoFileShellExt (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_4876145725FA41699870715256F6DAE1"
+            "FileType" = "3:1"
+            "InstallAction" = "3:3"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_4195408D_573C_419D_9AFE_A27240921D3B"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_6EC870FD6AD6470499C50A538E81BFF0"
+            {
+            "Name" = "8:Primary output from MezeoFileShellExt (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_4876145725FA41699870715256F6DAE1"
+            "FileType" = "3:1"
+            "InstallAction" = "3:2"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_FA08D5C0_92CF_481F_9FE4_EE195F341F5D"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_B043BD9E8C9645DB9D38E0B0FB2FDCAB"
+            {
+            "Name" = "8:Primary output from MezeoFileShellExt (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_4876145725FA41699870715256F6DAE1"
+            "FileType" = "3:1"
+            "InstallAction" = "3:1"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_FEBD2423_F968_4D21_8AC5_A34E7984C695"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_F55AA46B35A74A31ACB3ECF2B9D8C922"
+            {
+            "Name" = "8:Primary output from MezeoFileShellExt (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_4876145725FA41699870715256F6DAE1"
+            "FileType" = "3:1"
+            "InstallAction" = "3:4"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:3"
+            "Identifier" = "8:_82CD7B5D_76AA_4E75_B4B7_A58C2F20B7A5"
+            "InstallerClass" = "11:TRUE"
             "CustomActionData" = "8:"
             }
         }
@@ -463,7 +531,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:SupportFile, Version=2.0.66.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:SupportFile, Version=2.0.84.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_4728A40067CAEBA8827395E02A0E8EE4"
@@ -525,7 +593,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:SupportFile, Version=2.0.66.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:SupportFile, Version=2.0.84.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_67EA328AEF064EFCBFB28C52F2C7E133"
@@ -627,7 +695,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:MezeoFile, Version=2.0.66.0, Culture=neutral, processorArchitecture=AMD64"
+            "AssemblyAsmDisplayName" = "8:MezeoFile, Version=2.0.84.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
                     "_7534F32F1B53476FAA72264608D6113B"
@@ -881,15 +949,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:MezeoFile"
-        "ProductCode" = "8:{CB4B2299-EAAF-4E20-8F5B-EB9A7EB0FADC}"
-        "PackageCode" = "8:{F15CFDE3-F8C6-49DA-9C7C-D4784757AD5F}"
+        "ProductCode" = "8:{11350C99-E16A-4F31-8AA4-F2B134E9BB51}"
+        "PackageCode" = "8:{8716E9EB-B095-466D-94C6-78A0C425CEB2}"
         "UpgradeCode" = "8:{9A686460-3EE8-42C7-987B-2AC187ED8477}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.0.66"
+        "ProductVersion" = "8:2.0.84"
         "Manufacturer" = "8:Mezeo Software"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -905,7 +973,7 @@
         "UseSystemSearchPath" = "11:TRUE"
         "TargetPlatform" = "3:1"
         "PreBuildEvent" = "8:"
-        "PostBuildEvent" = "8:\"$(ProjectDir)SetArpInstallLocation.vbs\" \"$(BuiltOuputPath)\""
+        "PostBuildEvent" = "8:\"$(ProjectDir)SetArpInstallLocation.vbs\" \"$(BuiltOuputPath)\"\r\n\"$(ProjectDir)Fix64bitInstallUtilLib.js\" \"$(BuiltOuputPath)\" \"$(ProjectDir)\""
         "RunPostBuildEvent" = "3:0"
         }
         "Registry"
@@ -1469,7 +1537,7 @@
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_33A615A6549D44C9A6CB5168A4C75448"
             {
             "Name" = "8:Uninstall MezeoFile"
-            "Arguments" = "8:/x {CB4B2299-EAAF-4E20-8F5B-EB9A7EB0FADC}"
+            "Arguments" = "8:/x {11350C99-E16A-4F31-8AA4-F2B134E9BB51}"
             "Description" = "8:"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
@@ -1941,6 +2009,34 @@
         }
         "ProjectOutput"
         {
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4876145725FA41699870715256F6DAE1"
+            {
+            "SourcePath" = "8:..\\..\\MezeoFileContextMenu\\MezeoFileContextMenu\\obj\\x64\\Release\\MezeoFileShellExt.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_E2CA41781701484DA8E973D55A111194"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{3D733016-2E13-48BC-9EE0-FBCB6756AC04}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
         }
     }
 }
