@@ -502,4 +502,56 @@ namespace MezeoFileShellExt
             return (int)((sev << 31) | (fac << 16) | code);
         }
     }
+
+    // Note that with Flag C# accepts duplicate enum entries
+    [Flags]
+    public enum MFMENU : uint
+    {
+        MF_UNCHECKED = 0,
+        MF_STRING = 0,
+        MF_ENABLED = 0,
+        MF_BYCOMMAND = 0,
+        MF_GRAYED = 1,
+        MF_DISABLED = 0x00000002,
+        MF_CHECKED = 0x00000008,
+        MF_POPUP = 0x00000010,
+        MF_HILITE = 0x00000080,
+        MF_BYPOSITION = 0x00000400,
+        MF_SEPARATOR = 0x00000800,
+    }
+
+    public struct HMenu
+    {
+        public HMenu(IntPtr x)
+        {
+            handle = x;
+        }
+        public IntPtr handle;
+    }
+
+    public class Helpers
+    {
+        #region Win32 Imports
+
+        [DllImport("shell32")]
+        internal static extern uint DragQueryFile(uint hDrop, uint iFile, StringBuilder buffer, int cch);
+
+        [DllImport("user32")]
+        internal static extern HMenu CreatePopupMenu();
+
+        [DllImport("user32")]
+//        internal static extern bool InsertMenuItem(HMenu hmenu, uint uposition, uint uflags, ref MENUITEMINFO mii);
+        internal static extern bool InsertMenuItem(IntPtr hmenu, uint uposition, uint uflags, ref MENUITEMINFO mii);
+
+
+        // MF_BYCOMMAND MF_BYPOSITION MF_STRING MF_POPUP
+        [DllImport("user32")]
+        internal static extern bool AppendMenu(HMenu hmenu, MFMENU uflags, IntPtr uIDNewItemOrSubmenu, string text);
+
+        [DllImport("user32")]
+        //internal static extern bool InsertMenu(HMenu hmenu, int position, MFMENU uflags, IntPtr uIDNewItemOrSubmenu, string text);
+        internal static extern bool InsertMenu(IntPtr hmenu, int position, MFMENU uflags, IntPtr uIDNewItemOrSubmenu, string text);
+
+        #endregion
+    }
 }

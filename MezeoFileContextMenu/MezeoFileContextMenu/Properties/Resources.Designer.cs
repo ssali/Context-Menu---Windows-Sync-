@@ -60,6 +60,24 @@ namespace MezeoFileShellExt.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to MezeoFileShellExt.
+        /// </summary>
+        internal static string BrContextMenuProduct {
+            get {
+                return ResourceManager.GetString("BrContextMenuProduct", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MezeoFile.
+        /// </summary>
+        internal static string BrContextMenuTitle {
+            get {
+                return ResourceManager.GetString("BrContextMenuTitle", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Bitmap OK {
             get {
                 object obj = ResourceManager.GetObject("OK", resourceCulture);

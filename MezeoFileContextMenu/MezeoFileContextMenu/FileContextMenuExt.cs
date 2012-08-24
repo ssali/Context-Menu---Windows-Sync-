@@ -22,17 +22,16 @@ namespace MezeoFileShellExt
     [Guid("B1F1405D-94A1-4692-B72F-FC8CAF8B8700"), ComVisible(true)]
    // [Guid("BA47C1D0-7A37-43D3-B93A-F6733A9F5895"), ComVisible(true)]
     public class FileContextMenuExt : IShellExtInit, IContextMenu
-    {
+    { 
         // The name of the selected file.
         private string selectedFile;
-
-        private string menuText = "&MezeoFile";
+        //private string menuText = "&MezeoFile";
+        private string menuText = "&" + Resources.BrContextMenuTitle;
         private IntPtr menuBmp = IntPtr.Zero;
         private string verb = "csdisplay";
         private string verbCanonicalName = "CSDisplayFileName";
-        private string verbHelpText = "MezeoFile";
+        private string verbHelpText = Resources.BrContextMenuTitle;
         private uint IDM_DISPLAY = 0;
-
 
         public FileContextMenuExt()
         {
@@ -66,7 +65,8 @@ namespace MezeoFileShellExt
         {
             try
             {
-                ShellExtReg.RegisterShellExtContextMenuHandler(t.GUID,"*","MezeoFileShellExt");
+                //ShellExtReg.RegisterShellExtContextMenuHandler(t.GUID,"*","MezeoFileShellExt");
+                ShellExtReg.RegisterShellExtContextMenuHandler(t.GUID, "*", Resources.BrContextMenuProduct);
             }
             catch (Exception ex)
             {
@@ -80,7 +80,8 @@ namespace MezeoFileShellExt
         {
             try
             {
-                ShellExtReg.UnregisterShellExtContextMenuHandler(t.GUID, "*", "MezeoFileShellExt");
+                //ShellExtReg.UnregisterShellExtContextMenuHandler(t.GUID, "*", "MezeoFileShellExt");
+                ShellExtReg.UnregisterShellExtContextMenuHandler(t.GUID, "*", Resources.BrContextMenuProduct);
             }
             catch (Exception ex)
             {
@@ -222,12 +223,13 @@ namespace MezeoFileShellExt
         /// </returns>
         public int QueryContextMenu(
             IntPtr hMenu,
+            //HMenu hMenu,
             uint iMenu,
             uint idCmdFirst,
             uint idCmdLast,
             uint uFlags)
         {
-            string dirName = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + "MezeoFile" + "\\";
+            string dirName = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + Resources.BrContextMenuTitle +"\\";
 
             // If uFlags include CMF_DEFAULTONLY then we should not do anything.
             if (((uint)CMF.CMF_DEFAULTONLY & uFlags) != 0)
@@ -240,42 +242,59 @@ namespace MezeoFileShellExt
                 return WinError.MAKE_HRESULT(WinError.SEVERITY_SUCCESS, 0, 0);
             }
 
-            
-            // Add a separator.
-            MENUITEMINFO sep = new MENUITEMINFO();
-            sep.cbSize = (uint)Marshal.SizeOf(sep);
-            sep.fMask = MIIM.MIIM_TYPE;
-            sep.fType = MFT.MFT_SEPARATOR;
-            if (!NativeMethods.InsertMenuItem(hMenu, iMenu, true, ref sep))
-            {
-                return Marshal.GetHRForLastWin32Error();
-            }
+                   int id = 1;
+            //       if ((uFlags & (uint)(CMF.CMF_VERBSONLY | CMF.CMF_DEFAULTONLY | CMF.CMF_NOVERBS)) == 0 ||
+            //(uFlags & (uint)CMF.CMF_EXPLORE) != 0)
+               //    {
+                   // Add a separator.
+                   MENUITEMINFO sep = new MENUITEMINFO();
+                   sep.cbSize = (uint)Marshal.SizeOf(sep);
+                   sep.fMask = MIIM.MIIM_TYPE;
+                   sep.fType = MFT.MFT_SEPARATOR;
+                   if (!NativeMethods.InsertMenuItem(hMenu, iMenu, true, ref sep))
+                   {
+                       return Marshal.GetHRForLastWin32Error();
+                   }
+                                
+                       HMenu submenu = Helpers.CreatePopupMenu();
+                       Helpers.AppendMenu(submenu, MFMENU.MF_STRING | MFMENU.MF_ENABLED,
+                                          new IntPtr(idCmdFirst + id++), "Public share");
+                       Helpers.AppendMenu(submenu, MFMENU.MF_STRING | MFMENU.MF_ENABLED,
+                                          new IntPtr(idCmdFirst + id++), "Secure share");
+                       Helpers.AppendMenu(submenu, MFMENU.MF_STRING | MFMENU.MF_ENABLED,
+                                          new IntPtr(idCmdFirst + id++), "File versions");
+                       Helpers.AppendMenu(submenu, MFMENU.MF_STRING | MFMENU.MF_ENABLED,
+                                          new IntPtr(idCmdFirst + id++), "Comments");
+               
 
-            // Use either InsertMenu or InsertMenuItem to add menu items.
-            MENUITEMINFO mii = new MENUITEMINFO();
-            mii.cbSize = (uint)Marshal.SizeOf(mii);
-            mii.fMask = MIIM.MIIM_BITMAP | MIIM.MIIM_STRING | MIIM.MIIM_FTYPE | 
-                MIIM.MIIM_ID | MIIM.MIIM_STATE;
-            mii.wID = idCmdFirst + IDM_DISPLAY;
-            mii.fType = MFT.MFT_STRING;
-            mii.dwTypeData = this.menuText;
-            mii.fState = MFS.MFS_ENABLED;
-            mii.hbmpItem = this.menuBmp;
-            if (!NativeMethods.InsertMenuItem(hMenu, iMenu + 1 , true, ref mii))
-            {
-                return Marshal.GetHRForLastWin32Error();
-            }
+                 //// Use either InsertMenu or InsertMenuItem to add menu items.
+                 MENUITEMINFO mii = new MENUITEMINFO();
+                 mii.cbSize = (uint)Marshal.SizeOf(mii);
+                 mii.fMask = MIIM.MIIM_BITMAP | MIIM.MIIM_STRING | MIIM.MIIM_FTYPE |
+                     MIIM.MIIM_ID | MIIM.MIIM_STATE | MIIM.MIIM_SUBMENU;
+                 mii.wID = idCmdFirst + IDM_DISPLAY;
+                 mii.fType = MFT.MFT_STRING;
+                 mii.dwTypeData = this.menuText;
+                 mii.fState = MFS.MFS_ENABLED;
+                 mii.hbmpItem = this.menuBmp;
+                 mii.hSubMenu = submenu.handle;
+                 
+                 if (!NativeMethods.InsertMenuItem(hMenu, iMenu + 1, true, ref mii))
+                 {
+                     return Marshal.GetHRForLastWin32Error();
+                 }
 
-            // Add a separator.
-            MENUITEMINFO sep1 = new MENUITEMINFO();
-            sep1.cbSize = (uint)Marshal.SizeOf(sep1);
-            sep1.fMask = MIIM.MIIM_TYPE;
-            sep1.fType = MFT.MFT_SEPARATOR;
-            if (!NativeMethods.InsertMenuItem(hMenu, iMenu + 2, true, ref sep1))
-            {
-                return Marshal.GetHRForLastWin32Error();
-            }
-
+                 //// Add a separator.
+                 MENUITEMINFO sep1 = new MENUITEMINFO();
+                 sep1.cbSize = (uint)Marshal.SizeOf(sep1);
+                 sep1.fMask = MIIM.MIIM_TYPE;
+                 sep1.fType = MFT.MFT_SEPARATOR;
+                 if (!NativeMethods.InsertMenuItem(hMenu, iMenu + 2, true, ref sep1))
+                 {
+                     return Marshal.GetHRForLastWin32Error();
+                 }
+             
+        
             // Return an HRESULT value with the severity set to SEVERITY_SUCCESS. 
             // Set the code value to the offset of the largest command identifier 
             // that was assigned, plus one (1).
