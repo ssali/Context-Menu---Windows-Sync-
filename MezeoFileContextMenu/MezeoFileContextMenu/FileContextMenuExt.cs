@@ -13,6 +13,8 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using MezeoFileShellExt.Properties;
 using System.Drawing;
+using System.IO;
+using System.Diagnostics;
 #endregion
 
 
@@ -20,25 +22,31 @@ namespace MezeoFileShellExt
 {
     [ClassInterface(ClassInterfaceType.None)]
     [Guid("B1F1405D-94A1-4692-B72F-FC8CAF8B8700"), ComVisible(true)]
-   // [Guid("BA47C1D0-7A37-43D3-B93A-F6733A9F5895"), ComVisible(true)]
+
     public class FileContextMenuExt : IShellExtInit, IContextMenu
     { 
         // The name of the selected file.
         private string selectedFile;
-        //private string menuText = "&MezeoFile";
+   
         private string menuText = "&" + Resources.BrContextMenuTitle;
         private IntPtr menuBmp = IntPtr.Zero;
         private string verb = "csdisplay";
         private string verbCanonicalName = "CSDisplayFileName";
         private string verbHelpText = Resources.BrContextMenuTitle;
         private uint IDM_DISPLAY = 0;
+        uint cmdFirst;
+
+        // All Verbs for Context Menu
+        string[] syncVerbCanonicalName = null;     
 
         public FileContextMenuExt()
         {
             // Load the bitmap for the menu item.
-            Bitmap bmp = Resources.OK;
+            Bitmap bmp = Resources.ContextMenuIcon;
             bmp.MakeTransparent(bmp.GetPixel(0, 0));
             this.menuBmp = bmp.GetHbitmap();
+            // Write the string to a file.
+            Debug.WriteLine("Constructor Start");
         }
 
         ~FileContextMenuExt()
@@ -53,10 +61,14 @@ namespace MezeoFileShellExt
 
         void OnVerbDisplayFileName(IntPtr hWnd)
         {
+            Debug.WriteLine("Context menu click");
             UserInterface form2 = new UserInterface();
             form2.ShowDialog();
         }
 
+        // MessageBo
+    [DllImport("user32")]
+    static extern int MessageBox(int hWnd, string text, string caption, int type);
 
         #region Shell Extension Registration
 
@@ -229,8 +241,16 @@ namespace MezeoFileShellExt
             uint idCmdLast,
             uint uFlags)
         {
+            MessageBox(0, "Query context menu function", "Info", 0);
+            if (syncVerbCanonicalName != null && syncVerbCanonicalName.Length > 0)
+            {
+                Array.Clear(syncVerbCanonicalName, 0, syncVerbCanonicalName.Length);
+            }
+            
+            syncVerbCanonicalName = new string[10];
+           
             string dirName = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + Resources.BrContextMenuTitle +"\\";
-
+            MessageBox(0,"Query context menu function 2222","Info",0);
             // If uFlags include CMF_DEFAULTONLY then we should not do anything.
             if (((uint)CMF.CMF_DEFAULTONLY & uFlags) != 0)
             {
@@ -246,8 +266,11 @@ namespace MezeoFileShellExt
             //       if ((uFlags & (uint)(CMF.CMF_VERBSONLY | CMF.CMF_DEFAULTONLY | CMF.CMF_NOVERBS)) == 0 ||
             //(uFlags & (uint)CMF.CMF_EXPLORE) != 0)
                //    {
+                   
+                   //file.WriteLine("Add First Seperator");
                    // Add a separator.
-                   MENUITEMINFO sep = new MENUITEMINFO();
+                   cmdFirst = idCmdFirst;
+                    MENUITEMINFO sep = new MENUITEMINFO();
                    sep.cbSize = (uint)Marshal.SizeOf(sep);
                    sep.fMask = MIIM.MIIM_TYPE;
                    sep.fType = MFT.MFT_SEPARATOR;
@@ -255,18 +278,62 @@ namespace MezeoFileShellExt
                    {
                        return Marshal.GetHRForLastWin32Error();
                    }
-                                
+                   Debug.WriteLine("Context menu Submenu popup");
                        HMenu submenu = Helpers.CreatePopupMenu();
-                       Helpers.AppendMenu(submenu, MFMENU.MF_STRING | MFMENU.MF_ENABLED,
-                                          new IntPtr(idCmdFirst + id++), "Public share");
-                       Helpers.AppendMenu(submenu, MFMENU.MF_STRING | MFMENU.MF_ENABLED,
-                                          new IntPtr(idCmdFirst + id++), "Secure share");
-                       Helpers.AppendMenu(submenu, MFMENU.MF_STRING | MFMENU.MF_ENABLED,
-                                          new IntPtr(idCmdFirst + id++), "File versions");
-                       Helpers.AppendMenu(submenu, MFMENU.MF_STRING | MFMENU.MF_ENABLED,
-                                          new IntPtr(idCmdFirst + id++), "Comments");
-               
 
+                       string filePath = this.selectedFile;
+                       FileAttributes attr = File.GetAttributes(filePath);
+             
+                       //detect whether its a directory or file
+                       if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                       {
+                          // file.WriteLine("Menu for folder");
+                           Debug.WriteLine("Menu for folder");
+                           syncVerbCanonicalName[0] = "syncFolderContextMenu";
+                           Helpers.AppendMenu(submenu, MFMENU.MF_STRING | MFMENU.MF_ENABLED,
+                                              new IntPtr(idCmdFirst + id++), "Secure Share");
+                           syncVerbCanonicalName[1] = "syncSecureShare";
+           
+                           Helpers.AppendMenu(submenu, MFMENU.MF_STRING | MFMENU.MF_ENABLED,
+                                              new IntPtr(idCmdFirst + id++), "Comments");
+                           syncVerbCanonicalName[2] = "syncComments";
+                           Helpers.AppendMenu(submenu, MFMENU.MF_SEPARATOR | MFMENU.MF_ENABLED,
+                                                         new IntPtr(idCmdFirst + id++), "");
+                           syncVerbCanonicalName[3] = "syncSeparator";
+                           Helpers.AppendMenu(submenu, MFMENU.MF_STRING | MFMENU.MF_ENABLED,
+                                              new IntPtr(idCmdFirst + id++), "View Web Home");
+                           syncVerbCanonicalName[4] = "syncWebHome";
+                       }
+                       else 
+                       {
+                          // file.WriteLine("Menu for file");
+                           Debug.WriteLine("Menu for folder");
+                           syncVerbCanonicalName[0] = "syncFileContextMenu";
+                           Helpers.AppendMenu(submenu, MFMENU.MF_STRING | MFMENU.MF_ENABLED,
+                                              new IntPtr(idCmdFirst + id++), "Public Share");
+                           syncVerbCanonicalName[1] = "syncFilePublicShare";
+                           Helpers.AppendMenu(submenu, MFMENU.MF_STRING | MFMENU.MF_ENABLED,
+                                              new IntPtr(idCmdFirst + id++), "Secure Share");
+                           syncVerbCanonicalName[2] = "syncFileSecureShare";
+                           Helpers.AppendMenu(submenu, MFMENU.MF_STRING | MFMENU.MF_ENABLED,
+                                              new IntPtr(idCmdFirst + id++), "File Versions");
+                           syncVerbCanonicalName[3] = "syncFileVersion";
+                           Helpers.AppendMenu(submenu, MFMENU.MF_STRING | MFMENU.MF_ENABLED,
+                                              new IntPtr(idCmdFirst + id++), "Comments");
+                           syncVerbCanonicalName[4] = "syncFileComments";
+                           Helpers.AppendMenu(submenu, MFMENU.MF_SEPARATOR | MFMENU.MF_ENABLED,
+                                                         new IntPtr(idCmdFirst + id++), "");
+                           syncVerbCanonicalName[5] = "syncFileSeparator";
+                           Helpers.AppendMenu(submenu, MFMENU.MF_STRING | MFMENU.MF_ENABLED,
+                                              new IntPtr(idCmdFirst + id++), "View File on Web");
+                           syncVerbCanonicalName[6] = "syncSecureShare";
+                           Helpers.AppendMenu(submenu, MFMENU.MF_STRING | MFMENU.MF_ENABLED,
+                                              new IntPtr(idCmdFirst + id++), "View Web Home");
+                           syncVerbCanonicalName[7] = "syncFileWebHome";
+                       }
+
+                     //  file.WriteLine("Add main menu");
+                       Debug.WriteLine("Add main menu");
                  //// Use either InsertMenu or InsertMenuItem to add menu items.
                  MENUITEMINFO mii = new MENUITEMINFO();
                  mii.cbSize = (uint)Marshal.SizeOf(mii);
@@ -293,8 +360,8 @@ namespace MezeoFileShellExt
                  {
                      return Marshal.GetHRForLastWin32Error();
                  }
-             
-        
+              //   file.WriteLine("Add last Seperator");
+                 Debug.WriteLine("Add last Seperator");
             // Return an HRESULT value with the severity set to SEVERITY_SUCCESS. 
             // Set the code value to the offset of the largest command identifier 
             // that was assigned, plus one (1).
@@ -311,6 +378,7 @@ namespace MezeoFileShellExt
         /// </param>
         public void InvokeCommand(IntPtr pici)
         {
+
             bool isUnicode = false;
 
             // Determine which structure is being passed in, CMINVOKECOMMANDINFO or 
@@ -319,6 +387,10 @@ namespace MezeoFileShellExt
             // structure, in practice it often points to a CMINVOKECOMMANDINFOEX 
             // structure. This struct is an extended version of CMINVOKECOMMANDINFO 
             // and has additional members that allow Unicode strings to be passed.
+            //file.WriteLine("Invoke command");
+            string test = "InvokeCommand";
+            MessageBox(0, test, "Information", 0);
+            
             CMINVOKECOMMANDINFO ici = (CMINVOKECOMMANDINFO)Marshal.PtrToStructure(
                 pici, typeof(CMINVOKECOMMANDINFO));
             CMINVOKECOMMANDINFOEX iciex = new CMINVOKECOMMANDINFOEX();
@@ -331,7 +403,6 @@ namespace MezeoFileShellExt
                         typeof(CMINVOKECOMMANDINFOEX));
                 }
             }
-
             // Determines whether the command is identified by its offset or verb.
             // There are two ways to identify commands:
             // 
@@ -345,8 +416,12 @@ namespace MezeoFileShellExt
 
             // For the ANSI case, if the high-order word is not zero, the command's 
             // verb string is in lpcmi->lpVerb. 
+           // file.WriteLine("first condition for high word");
+             Debug.WriteLine("first condition for high word");
             if (!isUnicode && NativeMethods.HighWord(ici.verb.ToInt32()) != 0)
             {
+                MessageBox(0,"first condition for high word inside","",0);
+            
                 // Is the verb supported by this context menu extension?
                 if (Marshal.PtrToStringAnsi(ici.verb) == this.verb)
                 {
@@ -354,6 +429,8 @@ namespace MezeoFileShellExt
                 }
                 else
                 {
+                   // file.WriteLine("first condition for high word exception");
+            
                     // If the verb is not recognized by the context menu handler, it 
                     // must return E_FAIL to allow it to be passed on to the other 
                     // context menu handlers that might implement that verb.
@@ -365,9 +442,12 @@ namespace MezeoFileShellExt
             // command's verb string is in lpcmi->lpVerbW. 
             else if (isUnicode && NativeMethods.HighWord(iciex.verbW.ToInt32()) != 0)
             {
+                MessageBox(0, "Condition for high word first else if", "", 0);
                 // Is the verb supported by this context menu extension?
                 if (Marshal.PtrToStringUni(iciex.verbW) == this.verb)
                 {
+                   Debug.WriteLine("second condition for high word");
+            
                     OnVerbDisplayFileName(ici.hwnd);
                 }
                 else
@@ -375,7 +455,9 @@ namespace MezeoFileShellExt
                     // If the verb is not recognized by the context menu handler, it 
                     // must return E_FAIL to allow it to be passed on to the other 
                     // context menu handlers that might implement that verb.
+                  //  file.WriteLine("second condition for high word exception");
                     Marshal.ThrowExceptionForHR(WinError.E_FAIL);
+
                 }
             }
 
@@ -383,20 +465,100 @@ namespace MezeoFileShellExt
             // check the identifier offset.
             else
             {
-                // Is the command identifier offset supported by this context menu 
-                // extension?
-                if (NativeMethods.LowWord(ici.verb.ToInt32()) == IDM_DISPLAY)
+                Debug.WriteLine("Command can not identified");
+                string filePath = this.selectedFile;
+                FileAttributes attr = File.GetAttributes(filePath);
+                MessageBox(0, "Condition for high word first else if", "", 0);
+                //detect whether its a directory or file
+                if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
                 {
-                    OnVerbDisplayFileName(ici.hwnd);
+                   string test1 = (NativeMethods.LowWord(ici.verb.ToInt32()) - cmdFirst).ToString();
+                    Debug.WriteLine("detect directory or file");
+                    MessageBox(0, test1, "Information", 0);
+                    switch (NativeMethods.LowWord(ici.verb.ToInt32()) - cmdFirst)
+                    {
+                        case 1:
+                            MessageBox(0, "IContextMenu.InvokeCommand", "Information", 0);
+                            OnVerbDisplayFileName(ici.hwnd);
+                        break;
+                        
+                        case 2:
+                            MessageBox(0, "IContextMenu.InvokeCommand1", "Information", 0);
+                            OnVerbDisplayFileName(ici.hwnd);
+                        break;
+        
+                        case 4:
+                        MessageBox(0, "IContextMenu.InvokeCommand2", "Information", 0);
+                        OnVerbDisplayFileName(ici.hwnd);
+                        break;
+                    
+                        default:
+                            // If the verb is not recognized by the context menu handler, it 
+                            // must return E_FAIL to allow it to be passed on to the other 
+                            // context menu handlers that might implement that verb.
+                            Marshal.ThrowExceptionForHR(WinError.E_FAIL);
+                            break;
+                    }
                 }
                 else
                 {
-                    // If the verb is not recognized by the context menu handler, it 
-                    // must return E_FAIL to allow it to be passed on to the other 
-                    // context menu handlers that might implement that verb.
-                    Marshal.ThrowExceptionForHR(WinError.E_FAIL);
+                    MessageBox(0, "detect directory or file second switch", "", 0);
+                    switch (NativeMethods.LowWord(ici.verb.ToInt32()))
+                    {
+                        case 0:
+                            MessageBox(0, "IContextMenu.InvokeCommandFile 1", "Information", 0);
+                            OnVerbDisplayFileName(ici.hwnd);
+                            break;
+                        case 1:
+                            MessageBox(0, "IContextMenu.InvokeCommandFile 2", "Information", 0);
+                       
+                            OnVerbDisplayFileName(ici.hwnd);
+                            break;
+                        case 2:
+                            MessageBox(0, "IContextMenu.InvokeCommandFile 3", "Information", 0);
+                       
+                            OnVerbDisplayFileName(ici.hwnd);
+                            break;
+                        case 3:
+                            MessageBox(0, "IContextMenu.InvokeCommandFile 4", "Information", 0);
+                       
+                            OnVerbDisplayFileName(ici.hwnd);
+                            break;
+                        case 5:
+                            MessageBox(0, "IContextMenu.InvokeCommandFile 6", "Information", 0);
+                       
+                            OnVerbDisplayFileName(ici.hwnd);
+                            break;
+                        case 6:
+                            MessageBox(0, "IContextMenu.InvokeCommandFile 7", "Information", 0);
+                       
+                            OnVerbDisplayFileName(ici.hwnd);
+                            break;
+                        default:
+                            // If the verb is not recognized by the context menu handler, it 
+                            // must return E_FAIL to allow it to be passed on to the other 
+                            // context menu handlers that might implement that verb.
+                            Marshal.ThrowExceptionForHR(WinError.E_FAIL);
+                            break;
+                    }
                 }
-            }
+                
+                
+                //// Is the command identifier offset supported by this context menu 
+                //// extension?
+                //if (NativeMethods.LowWord(ici.verb.ToInt32()) == IDM_DISPLAY)
+                //{
+                //    OnVerbDisplayFileName(ici.hwnd);
+                //}
+                //else
+                //{
+                //    // If the verb is not recognized by the context menu handler, it 
+                //    // must return E_FAIL to allow it to be passed on to the other 
+                //    // context menu handlers that might implement that verb.
+                //    Marshal.ThrowExceptionForHR(WinError.E_FAIL);
+                //}
+            } 
+
         }
 
         /// <summary>
@@ -424,8 +586,16 @@ namespace MezeoFileShellExt
             StringBuilder pszName,
             uint cchMax)
         {
-            if (idCmd.ToUInt32() == IDM_DISPLAY)
+            return;
+           Debug.WriteLine("Get Command String");
+         
+          // MessageBox(0, "GetCommandString", "Information", 0);
+          // MessageBox(0, idCmd.ToString(), "Information", 0);
+            //if (idCmd.ToUInt32() == IDM_DISPLAY)
+            if (idCmd.ToUInt32() < 10)
             {
+                Debug.WriteLine("Switch Get Command String");
+            
                 switch ((GCS)uFlags)
                 {
                     case GCS.GCS_VERBW:
@@ -436,7 +606,7 @@ namespace MezeoFileShellExt
                         else
                         {
                             pszName.Clear();
-                            pszName.Append(this.verbCanonicalName);
+                            pszName.Append(this.syncVerbCanonicalName[idCmd.ToUInt32()]);
                         }
                         break;
 
@@ -453,8 +623,12 @@ namespace MezeoFileShellExt
                         break;
                 }
             }
+         //   MessageBox(0, pszName.ToString(), "Info", 0);
         }
+       
 
         #endregion
+        
     }
+   
 }

@@ -78,9 +78,9 @@ namespace MezeoFileShellExt.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap OK {
+        internal static System.Drawing.Bitmap ContextMenuIcon {
             get {
-                object obj = ResourceManager.GetObject("OK", resourceCulture);
+                object obj = ResourceManager.GetObject("ContextMenuIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

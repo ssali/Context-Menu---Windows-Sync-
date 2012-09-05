@@ -105,12 +105,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />
-    <None Include="OK.bmp" />
+    <None Include="ContextMenuIcon.bmp" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface.resx">
       <DependentUpon>UserInterface.cs</DependentUpon>
